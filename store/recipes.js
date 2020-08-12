@@ -5,43 +5,45 @@ export const state = () => ({
 })
 
 export const mutations = {
-    get(state, fruitsList) {
-        state.list = fruitsList
+    get(state, recipesList) {
+        state.list = recipesList
     },
-    add(state, fruit) {
-        state.list.push(fruit)
-    },
-
-    update(state, fruit) {
-        const index = state.list.findIndex((f) => f.name === fruit.name)
-        Vue.set(state.list, index, fruit)
+    add(state, recipe) {
+        state.list.push(recipe)
     },
 
-    remove(state, fruit) {
-        const index = state.list.findIndex((f) => f.name === fruit.name)
+    update(state, recipe) {
+        const index = state.list.findIndex((r) => r.id === recipe.id)
+        Vue.set(state.list, index, recipe)
+    },
+
+    remove(state, recipe) {
+        const index = state.list.findIndex((r) => r.id === recipe.id)
         Vue.delete(state.list, index)
     },
 }
 
 export const actions = {
     async get({ commit }) {
-        await this.app.$fruitsRepository.get().then((res) => commit('get', res))
+        await this.app.$recipesRepository
+            .get()
+            .then((res) => commit('get', res))
     },
 
     async add({ commit }, payload) {
-        await this.app.$fruitsRepository
+        await this.app.$recipesRepository
             .add(payload)
             .then((res) => commit('add', res))
     },
 
     async update({ commit }, payload) {
-        await this.app.$fruitsRepository
+        await this.app.$recipesRepository
             .update(payload)
             .then((res) => commit('update', res))
     },
 
     async delete({ commit }, payload) {
-        await this.app.$fruitsRepository
+        await this.app.$recipesRepository
             .remove(payload)
             .then((res) => commit('delete', res))
     },

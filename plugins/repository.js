@@ -1,5 +1,5 @@
-import fruitsRepository from '~/api/fruits'
+import recipesRepository from '~/api/recipes'
 
 export default (ctx, inject) => {
-    inject('fruitsRepository', fruitsRepository(ctx.$axios))
+    inject('recipesRepository', recipesRepository(ctx.$axios))
 }
