@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="colored-container full-height">
     <nuxt />
   </div>
 </template>
@@ -7,6 +7,23 @@
 <script>
 export default {}
 </script>
+
+<style scoped lang="scss">
+@import '~assets/scss/variables.scss';
+
+.colored-container {
+  background-color: $background-color-theme;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-container {
+  height: 400px;
+  width: 420px;
+  background-color: white;
+}
+</style>
 
 <style>
 html {
