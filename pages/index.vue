@@ -1,22 +1,27 @@
 <template>
   <div class="skills-create">
     <div class="skills-create__header">
-      <h2>Habilidades para adicionar</h2>
+      <h2>Skills do desenvolvedor</h2>
       <div class="header">
         <input type="text" v-model="newSkill" class="header__input" placeholder="Nova skill.." />
-        <span @click="addSkill()" class="header__add-button">Incluir</span>
+        <span @click="handleAdd()" class="header__add-button">Incluir</span>
       </div>
     </div>
     <div class="skills-create__body">
-      <div class="skills__body">
-        <ul id="myUl">
-          <li
-            v-for="(skill, index) in skills"
-            :key="index"
-            :class="skill.checked? 'checked' : ''"
-            @click="markToogle(skill)"
-          >{{skill.name}}</li>
-        </ul>
+      <div
+        v-for="(skill, index) in skills"
+        :key="index"
+        :class="['skills-list', skill.checked ? 'checked' : '']"
+      >
+        <div class="skills-list__mark">
+          <i v-if="skill.checked" class="el-icon-check"></i>
+        </div>
+        <div class="skills-list__name" @click="handleCheckSkill(skill)">{{skill.name}}</div>
+        <div class="skills-list__actions">
+          <el-tooltip class="item" effect="dark" content="Remover item" placement="top-start">
+            <i @click="handleRemove(skill)" class="el-icon-delete"></i>
+          </el-tooltip>
+        </div>
       </div>
     </div>
   </div>
@@ -24,6 +29,7 @@
 
 <script>
 import navbar from '@/layouts/partials/navbar.vue'
+import { mapActions, mapGetters } from 'Vuex'
 
 export default {
   components: {
@@ -32,32 +38,34 @@ export default {
   data() {
     return {
       newSkill: '',
-      skills: [
-        { name: 'C#', checked: false, proficiency: 1 },
-        { name: 'NodeJs', checked: false, proficiency: 1 },
-        { name: 'Vue', checked: true, proficiency: 1 },
-        { name: 'Java', checked: false, proficiency: 1 },
-        { name: 'Css', checked: false, proficiency: 1 },
-      ],
     }
   },
-  mounted() {
-    this.date = this.getYear()
+  computed: {
+    ...mapGetters({
+      skills: 'skills/list',
+    }),
   },
   methods: {
-    getYear() {
-      let date = new Date().getFullYear()
-      return date
-    },
-    addSkill() {
+    ...mapActions({
+      addSkill: 'skills/add',
+      removeSkill: 'skills/remove',
+      checkSkill: 'skills/update',
+    }),
+
+    handleAdd() {
       if (this.isInvalidSkill(this.newSkill)) return this.invalidSkillError()
 
-      this.skills.push({ name: this.newSkill, checked: false, proficiency: 1 })
+      const skill = { name: this.newSkill, checked: false, proficiency: 1 }
+      this.addSkill(skill)
       this.newSkill = ''
     },
 
-    markToogle(skill) {
-      skill.checked = !skill.checked
+    handleRemove(skill) {
+      this.removeSkill(skill)
+    },
+
+    handleCheckSkill(skill) {
+      this.checkSkill({ ...skill, checked: !skill.checked })
     },
 
     isInvalidSkill(name) {
@@ -92,41 +100,42 @@ export default {
       display: table;
       clear: both;
     }
+
+    & .header {
+      display: flex;
+
+      &__input {
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        width: 75%;
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      &__add-button {
+        padding: 10px;
+        width: 25%;
+        background: #c7ab7b;
+        color: #5c4319;
+        float: left;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
+      }
+    }
   }
 
-  & .header {
-    display: flex;
-
-    &__input {
-      margin: 0;
-      border: none;
-      border-radius: 0;
-      width: 75%;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    &__add-button {
-      padding: 10px;
-      width: 25%;
-      background: #c7ab7b;
-      color: #5c4319;
-      float: left;
-      text-align: center;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      border-radius: 0;
-    }
-  }
-
-  .skills__body {
-    ul li {
+  &__body {
+    & .skills-list {
       margin: 0;
       padding: 0;
-      display: relative;
-      cursor: pointer;
-      padding: 12px 8px 12px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
       background: #eee;
       font-size: 18px;
       transition: 0.2s;
@@ -136,37 +145,45 @@ export default {
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-    }
 
-    /*Make all odd list items different color  */
-    ul li:nth-child(odd) {
-      background: #f9f9f9;
-    }
+      &:nth-child(odd) {
+        background: #f9f9f9;
+      }
 
-    /*Darken on hover  */
-    ul li:hover {
-      background: #ddd;
-    }
+      &:hover {
+        background: #ddd;
+      }
 
-    /*When clicked on, add background color and strike out  */
-    ul li.checked {
-      background: #65745b;
-      color: #fff;
-      text-decoration: line-through;
-      border: 0.5px solid black;
-    }
+      &.checked {
+        background: #65745b;
+        color: #fff;
+        text-decoration: line-through;
+        border: 0.5px solid black;
+      }
 
-    ul li.checked::before {
-      content: '';
-      position: absolute;
-      border-color: #fff;
-      border-style: solid;
-      border-width: 0 2px 2px 0;
-      top: 10px;
-      left: 16px;
-      transform: rotate(45deg);
-      height: 15px;
-      width: 7px;
+      & div {
+        padding: 10px;
+      }
+
+      &__mark {
+        min-width: 30px;
+        width: 5%;
+        color: #38dd55;
+        padding: 20px;
+      }
+
+      &__name {
+        width: 90%;
+        cursor: pointer;
+        padding: 20px;
+      }
+
+      &__actions {
+        width: 5%;
+        cursor: pointer;
+        padding: 20px;
+        text-align: center;
+      }
     }
   }
 }

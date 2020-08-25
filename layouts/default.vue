@@ -20,6 +20,6 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
   background-color: #923cb9;
-  background-image: linear-gradient(13deg, #f556e8 50%, #5c9aaa 100%);
+  background-image: linear-gradient(43deg, #f556e8 20%, #5c9aaa 100%);
 }
 </style>
