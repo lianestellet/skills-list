@@ -3,7 +3,13 @@
     <div class="skills-create__header">
       <h2>Skills do desenvolvedor</h2>
       <div class="header">
-        <input type="text" v-model="newSkill" class="header__input" placeholder="Nova skill.." />
+        <input
+          @keyup.enter="handleAdd()"
+          type="text"
+          v-model="newSkill"
+          class="header__input"
+          placeholder="Nova skill.."
+        />
         <span @click="handleAdd()" class="header__add-button">Incluir</span>
       </div>
     </div>
@@ -16,7 +22,7 @@
         <div class="skills-list__mark">
           <i v-if="skill.checked" class="el-icon-check"></i>
         </div>
-        <div class="skills-list__name" @click="handleCheckSkill(skill)">{{skill.name}}</div>
+        <div class="skills-list__name" @click="handleCheckSkill(skill)">{{ skill.name }}</div>
         <div class="skills-list__actions">
           <el-tooltip class="item" effect="dark" content="Remover item" placement="top-start">
             <i @click="handleRemove(skill)" class="el-icon-delete"></i>
